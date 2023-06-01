@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gradient Background Example</title>
+  <style>
+    #image-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 300px;
+    }
+    
+    #image-wrapper div {
+      position: relative;
+    }
+    
+    #image-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="image-wrapper">
+    <div id="gradient-image">
+      <img id="your-image-element-id" src="#" alt="Your Image">
+    </div>
+  </div>
+  <input type="file" id="file-input">
+  <button id="change-gradient-button" disabled>Change Gradient</button>
+
+  <script src="https://unpkg.com/gradientify"></script>
+  <script>
+    // Get the image element from the HTML document
+    const image = document.getElementById('your-image-element-id');
+    const fileInput = document.getElementById('file-input');
+    const changeGradientButton = document.getElementById('change-gradient-button');
+
+    // Function to add gradient background to the image
+    function addGradientBackground(image) {
+      // Create a new div element to wrap the image
+      const wrapperDiv = document.createElement('div');
+
+      // Generate a random gradient from the "gradientify" library
+      const gradient = Gradientify.random();
+
+      // Apply the gradient as the background of the wrapper div
+      wrapperDiv.style.backgroundImage = gradient.css();
+
+      // Set the image as the background of the wrapper div
+      wrapperDiv.style.backgroundImage += `, url(${image.src})`;
+
+      // Set the size and position of the wrapper div
+      wrapperDiv.style.width = `${image.width}px`;
+      wrapperDiv.style.height = `${image.height}px`;
+
+      // Append the wrapper div with gradient background to the image wrapper
+      const imageWrapper = document.getElementById('gradient-image');
+      imageWrapper.appendChild(wrapperDiv);
+
+      // Enable the "Change Gradient" button
+      changeGradientButton.disabled = false;
+    }
+
+    // Function to handle file selection event
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const imageSrc = event.target.result;
+        image.src = imageSrc;
+
+        // Call the function with the new image element to apply a gradient
+        addGradientBackground(image);
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Function to change the gradient when the button is clicked
+    function changeGradient() {
+      const imageWrapper = document.getElementById('gradient-image');
+      imageWrapper.innerHTML = '';
+      addGradientBackground(image);
+    }
+
+    // Add event listener to the file input element
+    fileInput.addEventListener('change', handleFileSelect);
+
+    // Add event listener to the button element
+    changeGradientButton.addEventListener('click', changeGradient);
+  </script>
+</body>
+</html>
